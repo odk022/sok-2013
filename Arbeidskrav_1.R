@@ -38,17 +38,18 @@ to_2020<-data_to %>%
 
 
 # Lager enkelt plott:
-ggplot(to_2020, aes(x=trade_openness, y= gdp_per_cap)) +
+ggplot(to_2020, aes(x=gdp_per_cap, y= trade_openness)) +
   geom_point() +
   labs(title="Forholdet mellom Trade openness og BNP per capita", 
-       x= "Trade Openness", y= "BNP per innbygger")
+       x= "BNP per innbygger",
+       y="Trade Openness")
 
 # Plot med kvadratisk regresjonslinje:
-ggplot(to_2020, aes(x=trade_openness, y= gdp_per_cap)) +
+ggplot(to_2020, aes(x=gdp_per_cap, y= trade_openness)) +
     geom_point() +
-    labs(title="Forholdet mellom Trade openness og BNP per capita \nKvadratisk regresjon", 
-         x= "Trade Openness",
-       y= "BNP per innbygger") +
+    labs(title="Forholdet mellom BNP per capita og Trade openness \nKvadratisk regresjon", 
+         x= "BNP per innbygger",
+       y="Trade Openness" ) +
    # geom_text(aes(label = LOCATION))+
     geom_smooth(method = lm,formula = y ~ x + I(x^2),se=FALSE)
 
@@ -56,11 +57,11 @@ ggplot(to_2020, aes(x=trade_openness, y= gdp_per_cap)) +
 # Hva er forskjellen? Er det noen spesielt god grunn til å velge den ene over den andre i dette tilfellet?
 
 # Plot med log(gdp_per_cap):
-ggplot(to_2020, aes(x=trade_openness, y= log(gdp_per_cap))) +
+ggplot(to_2020, aes(x=log(gdp_per_cap), y= trade_openness)) +
   geom_point() +
   labs(title="Forholdet mellom Trade openness og BNP per capita \nmed log(BNP per capita)", 
-       x= "Trade Openness",
-       y= "log(BNP per innbygger)") +
+       x= "log(BNP per innbygger)",
+       y= "Trade Openness") +
   # geom_text(aes(label = LOCATION))+
   geom_smooth(method = lm,formula = y ~ x + I(x^2),se=FALSE)
 
