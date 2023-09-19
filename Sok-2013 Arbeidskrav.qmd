@@ -17,8 +17,12 @@ execute:
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(broom))
 suppressPackageStartupMessages(library(ggpubr))
+suppressPackageStartupMessages(library(kableExtra))
 options(scipen=999)
 ```
+
+Her er lenke til kodefila på github:\
+<https://github.com/odk022/sok-2013/blob/main/Sok-2013%20Arbeidskrav.qmd>
 
 ### Oppgave 1
 
@@ -28,34 +32,53 @@ datasett_1<-"https://raw.githubusercontent.com/uit-sok-2013-h23/Data_Arbeidskrav
 data_1<-read.csv(datasett_1)
 
 ```
+
 #### 1.
-Kalkuler «openness» til alle land i datasettet. Rapporter åpenheten til Norge, og forklar hva tallet betyr. Har Norge sett en endring i trade openness i perioden datasettet omhandler? (2018 – 2021)
+
+*Kalkuler «openness» til alle land i datasettet. Rapporter åpenheten til Norge, og forklar hva tallet betyr. Har Norge sett en endring i trade openness i perioden datasettet omhandler? (2018 -- 2021)*
+
+Kommentar:\
+Trade Openness måler hvor stor andel summen av eksport og import utgjør av bruttonasjonalproduktet i et land. Tabellen viser data for en del utvalgte land. Land der verdier mangler, er tatt ut. Den siste kolonnen - trade_openness - er i prosent. Tabellen viser at det er store forskjeller i trade openness mellom land. Vi ser for eksempel at det første landet i tabellen, Argentina, utgjør eksport og import relativt liten andel av bruttonasjonalprodukt, mens for Irland(IRL) lenger ned i tabellen utgjør eksport og import i perioden 2018-2022 rundt det dobbelte av bruttonasjonalproduktet.
 
 Trade Openness for alle land:
+
 ```{r Openness alle land}
 # Beregner trade openness for alle land. Jeg tar vekk land med manglende verdier
 
 data_to<-data_1 %>% 
   drop_na() %>% 
   mutate(trade_openness=((EXP+IMP)/gdp)*100)
-data_to
 ```
 
+```{r tabell trade openness}
+
+knitr::kable(data_to) %>%
+ column_spec(1,width = "5cm") %>% 
+  kable_styling(bootstrap_options = c("striped")) 
+```
 
 Trade Openness for Norge:
+
 ```{r Openness for Norge}
 # Lager eget datasett for Norge:
 
 to_norge<-data_to %>% 
   filter(LOCATION=="NOR")
-to_norge
 ```
-Kommentar:  
-Vi ser at trade openness for Norge økte fra 2018 til 2020 for deretter å avta i 2021 og 2022. 2022 var det laveste nivået i måleperioden.
 
+```{r tabell for Norge:}
+
+knitr::kable(to_norge) %>%
+ column_spec(1,width = "5cm") %>% 
+  kable_styling(bootstrap_options = c("striped")) 
+```
+
+Kommentar:\
+Vi ser av tabellen ovenfor at trade openness for Norge økte fra 2018 til 2020 for deretter å avta i 2021 og 2022. 2022 var det laveste nivået i måleperioden. Vi ser at den fallende tendensen i 2021-2022 har sammenheng med økende eksport, sannsynligvis av olje og gass.
 
 #### 2.
-Lag et scatter-plot for trade openness til alle land i 2020. Legg til en kvadratisk regresjonslinje hvor «openness» er på y-aksen og BNP per capita er på x-aksen. Forklar kort hva grafen viser
+
+*Lag et scatter-plot for trade openness til alle land i 2020. Legg til en kvadratisk regresjonslinje hvor «openness» er på y-aksen og BNP per capita er på x-aksen. Forklar kort hva grafen viser.*
 
 ```{r plott 1}
 #| label: fig-trade_openness_and_gdp1
@@ -81,12 +104,13 @@ ggplot(to_2020, aes(x=gdp_per_cap, y= trade_openness)) +
 
 
 ```
-Kommentar:  
 
+Kommentar:\
+Vi ser figur 1 at det er en positiv sammenheng mellom BNP per innbygger og Trade Openness. Dette innebærer at vi kan forvente at jo høyere BNP per innbygger et land har, jo større andel av BNP utgjøres av handel med utlandet.
 
-#### 3. 
-Gjenta deloppgave 2, men nå med logaritmen av BNP per capita på x-aksen i stedet. 
-Hva er forskjellen? Er det noen spesielt god grunn til å velge den ene over den andre i dette tilfellet?
+#### 3.
+
+*Gjenta deloppgave 2, men nå med logaritmen av BNP per capita på x-aksen i stedet. Hva er forskjellen? Er det noen spesielt god grunn til å velge den ene over den andre i dette tilfellet?*
 
 ```{r plott 2}
 #| label: fig-trade_openness_and_gdp_2
@@ -103,13 +127,16 @@ scale_x_log10(labels = scales::label_log()) +
   theme_minimal()
 ```
 
+Kommentar:\
+Vi ser av figur 2 at ved å velge log-transformasjon av BNP per innbygger får vi redusert betydningen av ekstremverdiene i datasettet. Vi får også bedre fram at regresjonslinjen har en konveks form.
+
 ### Oppgave 2:
+
 ```{r datasett 2}
 # Henter datasettet: 
 
 url_1 <- "https://raw.githubusercontent.com/uit-sok-2013-h23/Data_Arbeidskrav_1/main/datasett2.csv"
 data_2 <- read.csv(url_1)
-
 
 # rydder vekk alle rader med NA
 data_2_ryddet<-data_2 %>% 
@@ -117,7 +144,8 @@ data_2_ryddet<-data_2 %>%
 ```
 
 #### 1:
-Bruk datasettet til å konstruere en graf med en kvadratisk regresjonslinje, hvor handelsoverlapp-verdiene er på y-aksen og Similarity Indeks-verdiene er på x-aksen. Forklar kort hva grafen betyr.
+
+*Bruk datasettet til å konstruere en graf med en kvadratisk regresjonslinje, hvor handelsoverlapp-verdiene er på y-aksen og Similarity Indeks-verdiene er på x-aksen. Forklar kort hva grafen betyr.*
 
 ```{r plott 3}
 #| label: fig-simil_index_og_overlap
@@ -129,22 +157,22 @@ ggplot(data_2_ryddet, aes(x=simil_index, y= overlap)) +
   labs(title="Forholdet mellom simil index og overlap", 
        x= "Simil index",
        y= "Overlap") +
-  # geom_text(aes(label = LOCATION))+
   geom_smooth(method = lm,formula = y ~ x + I(x^2)) +
   theme_minimal()
 ```
-Kommentar:  
-På x-aksen har vi Simil Index som måler
+
+Kommentar:\
+I figur 3 har vi på x-aksen Simil Index som angir graden av likhet mellom Tyskland og en handelspartner i økonomisk forstand (nivå på BNP per capita). På y-aksen har vi grad av overlappende handel mellom Tyskland og andre land, såkalt intra-industriell handel. Figuren viser at graden av overlappende handel øker når BNP per capita nærmer seg Tysklands nivå.
 
 #### 2:
-Legg til tekst som markerer Sverige, Norge, Danmark, og Finland sin plassering på grafen.Tolk hva Norges plassering på grafen betyr sammenlignet med de resterende landene.
+
+*Legg til tekst som markerer Sverige, Norge, Danmark, og Finland sin plassering på grafen.Tolk hva Norges plassering på grafen betyr sammenlignet med de resterende landene.*
 
 ```{r Om de nordiske landene}
 # Henter relevante land:
 countries <- c("NOR", "DNK", "FIN", "SWE")
 countryfilter <- data_2_ryddet[data_2_ryddet$pcode %in% countries,]
 ```
-
 
 ```{r plott 4 de nordiske landene}
 #| label: fig-simil_index_og_overlap_nordic
@@ -159,9 +187,6 @@ ggplot(data_2_ryddet, aes(x=simil_index, y= overlap)) +
   geom_smooth(method = lm,formula = y ~ x + I(x^2)) +
   theme_minimal()
 ```
-Kommentar:  
 
-
-
-
-
+Kommentar:\
+Vi ser av figur 4 at Sverige,Danmark og Finland har veldig stor grad av overlappende handel med Tyskland, mens Norge ligger vesenlig lavere. En tolkning av dette er at mens de andre landene driver intra-industriell handel med tradisjonelle industrivarer, er Olje- og gasseksport en vesentlig del av Norges BNP. På dette området vil det ikke være noe særlig overlappende handel med Tyskland, og dermed vil denne forskjellen oppstå.
