@@ -1,7 +1,9 @@
 #Innlevering arbeidskrav SOK-2013
 
 suppressPackageStartupMessages(library(tidyverse))
-
+suppressPackageStartupMessages(library(broom))
+suppressPackageStartupMessages(library(ggpubr))
+options(scipen=999)
 
 
 # Henter datasettet
@@ -14,7 +16,7 @@ data_1<-read.csv(datasett_1)
 # Beregner trade openness for alle land. Jeg tar vekk land med manglende verdier
 data_to<-data_1 %>% 
   drop_na() %>% 
-  mutate(trade_openness=(EXP+IMP)/gdp)
+  mutate(trade_openness=((EXP+IMP)/gdp)*100)
 
 # Lager eget datasett for Norge:
 
@@ -38,11 +40,16 @@ to_2020<-data_to %>%
 
 
 # Lager enkelt plott:
+
+
+# Med gdp per cap:
 ggplot(to_2020, aes(x=gdp_per_cap, y= trade_openness)) +
   geom_point() +
   labs(title="Forholdet mellom Trade openness og BNP per capita", 
        x= "BNP per innbygger",
        y="Trade Openness")
+
+cor(to_2020$gdp_per_cap, to_2020$trade_openness)
 
 # Plot med kvadratisk regresjonslinje:
 ggplot(to_2020, aes(x=gdp_per_cap, y= trade_openness)) +
@@ -59,11 +66,12 @@ ggplot(to_2020, aes(x=gdp_per_cap, y= trade_openness)) +
 # Plot med log(gdp_per_cap):
 ggplot(to_2020, aes(x=log(gdp_per_cap), y= trade_openness)) +
   geom_point() +
-  labs(title="Forholdet mellom Trade openness og BNP per capita \nmed log(BNP per capita)", 
+  labs(title="Forholdet mellom Trade openness og BNP per capita \nmed log(BNP per capita).Kvadratisk regresjon", 
        x= "log(BNP per innbygger)",
        y= "Trade Openness") +
   # geom_text(aes(label = LOCATION))+
   geom_smooth(method = lm,formula = y ~ x + I(x^2),se=FALSE)
+#scale_x_log10(labels = scales::label_log())
 
 
 # Oppgave 2:
