@@ -1,7 +1,7 @@
 ---
 title: "SOK-2013 Arbeidskrav 1"
 author: Oddmund Klæboe
-format: html
+format: pdf
 editor: visual
 execute: 
   warning: false
@@ -19,6 +19,7 @@ suppressPackageStartupMessages(library(broom))
 suppressPackageStartupMessages(library(ggpubr))
 suppressPackageStartupMessages(library(kableExtra))
 options(scipen=999)
+knitr::opts_chunk$set(fig.pos = "H")
 ```
 
 Her er lenke til kodefila på github:\
@@ -38,7 +39,7 @@ data_1<-read.csv(datasett_1)
 *Kalkuler «openness» til alle land i datasettet. Rapporter åpenheten til Norge, og forklar hva tallet betyr. Har Norge sett en endring i trade openness i perioden datasettet omhandler? (2018 -- 2021)*
 
 Kommentar:\
-Trade Openness måler hvor stor andel summen av eksport og import utgjør av bruttonasjonalproduktet i et land. Tabellen viser data for en del utvalgte land. Land der verdier mangler, er tatt ut. Den siste kolonnen - trade_openness - er i prosent. Tabellen viser at det er store forskjeller i trade openness mellom land. Vi ser for eksempel at det første landet i tabellen, Argentina, utgjør eksport og import relativt liten andel av bruttonasjonalprodukt, mens for Irland(IRL) lenger ned i tabellen utgjør eksport og import i perioden 2018-2022 rundt det dobbelte av bruttonasjonalproduktet.
+Trade Openness måler hvor stor andel summen av eksport og import utgjør av bruttonasjonalproduktet i et land. Tabellen viser et utsnitt av datatabellen . Den siste kolonnen - trade_openness - er i prosent. Det er store forskjeller i trade openness mellom land. Vi ser for eksempel at for det første landet i tabellen, Argentina, utgjør eksport og import relativt liten andel av bruttonasjonalprodukt, mens for det andre landet i tabellen, Australia, utgjør eksport og import som andel av bruttonasjonalprodukt i perioden 2018-2021 det dobbelte av Argentinas verdi.
 
 Trade Openness for alle land:
 
@@ -48,12 +49,12 @@ Trade Openness for alle land:
 data_to<-data_1 %>% 
   drop_na() %>% 
   mutate(trade_openness=((EXP+IMP)/gdp)*100)
+data_to_utvalg<- head(data_to,n=8)
 ```
 
-```{r tabell trade openness}
-
-knitr::kable(data_to) %>%
- column_spec(1,width = "5cm") %>% 
+```{r utvalg trade openness}
+knitr::kable(data_to_utvalg) %>%
+ column_spec(1,width = "3cm") %>% 
   kable_styling(bootstrap_options = c("striped")) 
 ```
 
@@ -69,7 +70,7 @@ to_norge<-data_to %>%
 ```{r tabell for Norge:}
 
 knitr::kable(to_norge) %>%
- column_spec(1,width = "5cm") %>% 
+ column_spec(1,width = "3cm") %>% 
   kable_styling(bootstrap_options = c("striped")) 
 ```
 
@@ -104,7 +105,8 @@ ggplot(to_2020, aes(x=gdp_per_cap, y= trade_openness)) +
 
 
 ```
-
+  
+\
 Kommentar:\
 Vi ser figur 1 at det er en positiv sammenheng mellom BNP per innbygger og Trade Openness. Dette innebærer at vi kan forvente at jo høyere BNP per innbygger et land har, jo større andel av BNP utgjøres av handel med utlandet.
 
